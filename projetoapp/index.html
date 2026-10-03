@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GastroHub Guariba | Restaurantes, Lanchonetes & Pizzarias em Guariba - SP</title>
+  <meta name="description" content="Descubra os melhores restaurantes, lanchonetes artesanais e pizzarias da cidade de Guariba - SP. Faça seu cadastro e peça diretamente pelo site com rastreamento em tempo real.">
+
+  <!-- Ícones Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- CSS Principal -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <header class="navbar">
+    <div class="container nav-container">
+      <a href="#" class="brand-logo" id="logoLink">
+        <div class="brand-icon">
+          <i class="fa-solid fa-utensils"></i>
+        </div>
+        <div class="brand-title">Gastro<span>Hub</span> <small style="font-size: 0.6em; opacity: 0.8; font-weight: normal; margin-left: 4px;">Guariba</small></div>
+      </a>
+
+      <div class="nav-actions">
+        <!-- Botão Alternar Tema (Dark/Light) -->
+        <button class="btn-icon" id="themeToggleBtn" title="Alternar Modo Escuro/Claro" aria-label="Alternar Tema">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+
+        <!-- Botão Favoritos -->
+        <button class="btn-icon" id="favoritesFilterBtn" title="Ver meus favoritos" aria-label="Favoritos">
+          <i class="fa-solid fa-heart"></i>
+          <span class="badge-count" id="favoritesCount" style="display: none;">0</span>
+        </button>
+
+        <!-- Botão Sacola de Pedidos -->
+        <button class="btn-cart" id="openCartBtn" title="Ver sacola de pedidos" aria-label="Sacola de Pedidos">
+          <i class="fa-solid fa-bag-shopping"></i>
+          <span class="cart-label">Sacola</span>
+          <span class="badge-count cart-badge" id="cartBadge" style="display: none;">0</span>
+        </button>
+
+        <!-- Área de Usuário (Entrar ou Perfil) -->
+        <div class="user-auth-area" id="userAuthArea">
+          <!-- Renderizado dinamicamente via JS: Botão Entrar ou Dropdown do Usuário -->
+          <button class="btn-secondary btn-login" id="openAuthModalBtn">
+            <i class="fa-regular fa-user"></i>
+            <span>Entrar</span>
+          </button>
+        </div>
+
+        <!-- Botão Cadastrar Estabelecimento -->
+        <button class="btn-primary" id="openAddModalBtn" title="Cadastrar restaurante ou lanchonete">
+          <i class="fa-solid fa-circle-plus"></i>
+          <span>+ Estabelecimento</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-tag">
+        <i class="fa-solid fa-location-dot"></i> Gastronomia e Delivery em Guariba - SP
+      </div>
+      
+      <h1 class="hero-title">
+        Descubra onde comer em Guariba: <br>
+        <span class="gradient-text">Pizzarias, Burgers & Restaurantes</span>
+      </h1>
+      
+      <p class="hero-subtitle">
+        Os melhores restaurantes, lanchonetes e pizzarias de Guariba - SP em um só lugar. Peça online e acompanhe seu pedido em tempo real!
+      </p>
+
+      <!-- Barra de Busca Interativa -->
+      <div class="hero-search-wrapper">
+        <div class="hero-search-bar">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <input 
+            type="text" 
+            id="searchInput" 
+            class="hero-search-input" 
+            placeholder="Buscar por restaurante, prato, lanche ou bairro em Guariba..."
+            autocomplete="off"
+          >
+          <button class="clear-search-btn" id="clearSearchBtn" title="Limpar pesquisa">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Métricas / Destaques -->
+      <div class="hero-stats">
+        <div class="stat-item">
+          <i class="fa-solid fa-store"></i>
+          <span><strong id="statPlacesCount">0</strong> Estabelecimentos</span>
+        </div>
+        <div class="stat-item">
+          <i class="fa-solid fa-bag-shopping"></i>
+          <span><strong>Pedidos</strong> Direto no Site</span>
+        </div>
+        <div class="stat-item">
+          <i class="fa-solid fa-star"></i>
+          <span><strong>4.8+</strong> Média de Avaliação</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEÇÃO PRINCIPAL: NAVEGAÇÃO & CARDS -->
+  <main class="container">
+    <!-- Pílulas de Categoria -->
+    <section class="categories-section">
+      <div class="category-pills" id="categoryPills">
+        <button class="cat-pill active" data-category="all">
+          <span class="cat-emoji">🍽️</span> Todos os Sabores
+        </button>
+        <button class="cat-pill" data-category="pizzaria">
+          <span class="cat-emoji">🍕</span> Pizzarias Forno & Artesanal
+        </button>
+        <button class="cat-pill" data-category="lanchonete">
+          <span class="cat-emoji">🍔</span> Lanchonetes & Smash Burgers
+        </button>
+        <button class="cat-pill" data-category="restaurante">
+          <span class="cat-emoji">🍷</span> Restaurantes & Bistrôs
+        </button>
+      </div>
+    </section>
+
+    <!-- Barra de Filtros Complementares -->
+    <section class="filter-bar">
+      <div class="filter-left">
+        <button class="filter-chip" id="filterOpenNow" data-filter="open">
+          <i class="fa-regular fa-clock"></i> Aberto Agora
+        </button>
+        <button class="filter-chip" id="filterFreeDelivery" data-filter="freeDelivery">
+          <i class="fa-solid fa-truck-fast"></i> Entrega Grátis
+        </button>
+        <button class="filter-chip" id="filterHighRating" data-filter="topRated">
+          <i class="fa-solid fa-star"></i> Nota 4.8+
+        </button>
+        <button class="filter-chip" id="filterFavoritesOnly" data-filter="favorites">
+          <i class="fa-solid fa-heart"></i> Favoritos
+        </button>
+      </div>
+
+      <div class="filter-right">
+        <span class="results-count" id="resultsCount">Mostrando <strong>0</strong> locais</span>
+        
+        <div class="sort-select-wrapper">
+          <select id="sortSelect" class="sort-select" aria-label="Ordenar resultados">
+            <option value="rating">Melhor Avaliados</option>
+            <option value="reviews">Mais Populares</option>
+            <option value="time">Entrega Mais Rápida</option>
+            <option value="name">Ordem Alfabética</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Grid onde serão renderizados os Cards -->
+    <section class="places-grid" id="placesGrid">
+      <!-- Inserido dinamicamente via JS -->
+    </section>
+  </main>
+
+  <!-- ============================================================
+       DRAWER / SACOLA DE PEDIDOS & CHECKOUT
+       ============================================================ -->
+  <div class="drawer-overlay" id="cartOverlay" aria-hidden="true">
+    <aside class="cart-drawer" id="cartDrawer">
+      <div class="drawer-header">
+        <div class="drawer-title-box">
+          <div class="cart-icon-circle">
+            <i class="fa-solid fa-bag-shopping"></i>
+          </div>
+          <div>
+            <h2 class="drawer-title">Minha Sacola</h2>
+            <p class="drawer-subtitle" id="cartRestaurantName">Nenhum item adicionado</p>
+          </div>
+        </div>
+        <button class="btn-icon" id="closeCartBtn" title="Fechar Sacola">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Corpo da Sacola: Itens ou Vazia -->
+      <div class="drawer-body" id="cartBody">
+        <!-- Inserido dinamicamente via JS -->
+      </div>
+
+      <!-- Rodapé da Sacola: Totais & Botão Finalizar -->
+      <div class="drawer-footer" id="cartFooter" style="display: none;">
+        <div class="cart-summary">
+          <div class="summary-row">
+            <span>Subtotal</span>
+            <span id="cartSubtotal">R$ 0,00</span>
+          </div>
+          <div class="summary-row">
+            <span>Taxa de Entrega</span>
+            <span id="cartDeliveryFee">Grátis</span>
+          </div>
+          <div class="summary-row total">
+            <span>Total</span>
+            <span id="cartTotal">R$ 0,00</span>
+          </div>
+        </div>
+
+        <button class="btn-primary btn-checkout" id="goToCheckoutBtn">
+          <span>Avançar para o Pagamento</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+
+      <!-- Etapa de Checkout (Substitui os itens quando clica em avançar) -->
+      <div class="drawer-checkout-view" id="checkoutView" style="display: none;">
+        <div class="checkout-step-header">
+          <button class="btn-icon" id="backToCartBtn" title="Voltar para a Sacola">
+            <i class="fa-solid fa-arrow-left"></i>
+          </button>
+          <h3>Finalizar Pedido no Site</h3>
+        </div>
+
+        <form id="checkoutForm" class="checkout-form">
+          <!-- Endereço de Entrega -->
+          <div class="checkout-section">
+            <div class="section-badge"><i class="fa-solid fa-location-dot"></i> Endereço de Entrega</div>
+            <div id="checkoutAddressDisplay" class="address-preview-box">
+              <span id="checkoutAddressText">Faça login para selecionar o endereço.</span>
+              <button type="button" id="editAddressBtn" class="link-btn">Alterar</button>
+            </div>
+            <div id="addressEditFields" style="display: none; margin-top: 10px;">
+              <input type="text" id="orderAddress" class="form-input" placeholder="Rua, Número e Bairro em Guariba" required>
+              <input type="text" id="orderComplement" class="form-input" style="margin-top: 6px;" placeholder="Complemento / Apto / Ponto de referência">
+            </div>
+          </div>
+
+          <!-- Forma de Pagamento -->
+          <div class="checkout-section">
+            <div class="section-badge"><i class="fa-solid fa-credit-card"></i> Forma de Pagamento</div>
+            <div class="payment-methods-grid">
+              <label class="payment-method-card active">
+                <input type="radio" name="paymentMethod" value="pix" checked>
+                <div class="pay-icon"><i class="fa-brands fa-pix"></i></div>
+                <div class="pay-info">
+                  <strong>Pix Imediato</strong>
+                  <small>Aprovação instantânea</small>
+                </div>
+              </label>
+
+              <label class="payment-method-card">
+                <input type="radio" name="paymentMethod" value="card_delivery">
+                <div class="pay-icon"><i class="fa-solid fa-credit-card"></i></div>
+                <div class="pay-info">
+                  <strong>Cartão na Entrega</strong>
+                  <small>Crédito ou Débito</small>
+                </div>
+              </label>
+
+              <label class="payment-method-card">
+                <input type="radio" name="paymentMethod" value="cash">
+                <div class="pay-icon"><i class="fa-solid fa-money-bill-wave"></i></div>
+                <div class="pay-info">
+                  <strong>Dinheiro</strong>
+                  <small>Pagar na entrega</small>
+                </div>
+              </label>
+            </div>
+
+            <div id="trocoContainer" style="display: none; margin-top: 10px;">
+              <label class="form-label" for="cashChangeInput">Precisa de troco para quanto?</label>
+              <input type="text" id="cashChangeInput" class="form-input" placeholder="Ex: R$ 50,00 ou Não preciso de troco">
+            </div>
+          </div>
+
+          <!-- Observações Gerais do Pedido -->
+          <div class="checkout-section">
+            <label class="form-label" for="orderNotes">
+              <i class="fa-regular fa-comment-dots"></i> Observações para o restaurante
+            </label>
+            <input type="text" id="orderNotes" class="form-input" placeholder="Ex: Tocar a campainha, talheres descartáveis...">
+          </div>
+
+          <!-- Resumo de Valores -->
+          <div class="checkout-summary-box">
+            <div class="summary-row">
+              <span>Total a Pagar:</span>
+              <strong id="checkoutFinalTotal" style="color: var(--primary); font-size: 1.25rem;">R$ 0,00</strong>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-primary btn-confirm-order">
+            <i class="fa-solid fa-check-circle"></i> Confirmar e Fazer Pedido
+          </button>
+        </form>
+      </div>
+    </aside>
+  </div>
+
+  <!-- ============================================================
+       MODAL DE AUTENTICAÇÃO (LOGIN & CADASTRO DE CLIENTE)
+       ============================================================ -->
+  <div class="modal-overlay" id="authModal" aria-hidden="true">
+    <div class="modal-container auth-modal-box">
+      <button class="modal-close-btn" id="closeAuthModalBtn" title="Fechar">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="auth-header">
+        <div class="brand-icon" style="margin: 0 auto 12px; width: 48px; height: 48px;">
+          <i class="fa-solid fa-utensils"></i>
+        </div>
+        <h2 class="modal-title" style="text-align: center; font-size: 1.5rem;">Sua Conta no GastroHub Guariba</h2>
+        <p class="place-desc" style="text-align: center; margin-bottom: 20px;">
+          Cadastre-se para fazer pedidos, salvar seus endereços e acompanhar entregas.
+        </p>
+
+        <!-- Abas: Entrar / Cadastrar -->
+        <div class="auth-tabs">
+          <button class="auth-tab-btn active" id="tabLoginBtn" type="button">Entrar</button>
+          <button class="auth-tab-btn" id="tabRegisterBtn" type="button">Criar Conta</button>
+        </div>
+      </div>
+
+      <div class="modal-content" style="padding-top: 10px;">
+        <!-- Formulário de Login -->
+        <form id="loginForm" class="auth-form-panel active">
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label class="form-label" for="loginEmail">
+              <i class="fa-solid fa-envelope"></i> E-mail
+            </label>
+            <input type="email" id="loginEmail" class="form-input" placeholder="seuemail@exemplo.com" required>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 20px;">
+            <label class="form-label" for="loginPassword">
+              <i class="fa-solid fa-lock"></i> Senha
+            </label>
+            <input type="password" id="loginPassword" class="form-input" placeholder="Sua senha secreta" required>
+          </div>
+
+          <button type="submit" class="btn-primary full-width-btn">
+            <i class="fa-solid fa-right-to-bracket"></i> Entrar na Minha Conta
+          </button>
+        </form>
+
+        <!-- Formulário de Cadastro -->
+        <form id="registerForm" class="auth-form-panel">
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label class="form-label" for="regName">
+              <i class="fa-solid fa-user"></i> Nome Completo *
+            </label>
+            <input type="text" id="regName" class="form-input" placeholder="Ex: Ana Maria Silva" required>
+          </div>
+
+          <div class="form-grid" style="gap: 12px; margin-bottom: 12px;">
+            <div class="form-group">
+              <label class="form-label" for="regEmail">
+                <i class="fa-solid fa-envelope"></i> E-mail *
+              </label>
+              <input type="email" id="regEmail" class="form-input" placeholder="email@exemplo.com" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="regPhone">
+                <i class="fa-brands fa-whatsapp"></i> Celular / WhatsApp *
+              </label>
+              <input type="tel" id="regPhone" class="form-input" placeholder="(16) 99999-8888" required>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label class="form-label" for="regPassword">
+              <i class="fa-solid fa-lock"></i> Criar Senha *
+            </label>
+            <input type="password" id="regPassword" class="form-input" placeholder="Mínimo de 6 caracteres" minlength="6" required>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label class="form-label" for="regAddress">
+              <i class="fa-solid fa-map-location-dot"></i> Endereço Principal de Entrega *
+            </label>
+            <input type="text" id="regAddress" class="form-input" placeholder="Rua / Avenida, Número e Bairro em Guariba" required>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 20px;">
+            <label class="form-label" for="regComplement">
+              <i class="fa-solid fa-building"></i> Complemento (Opcional)
+            </label>
+            <input type="text" id="regComplement" class="form-input" placeholder="Apto, Bloco, Casa dos fundos...">
+          </div>
+
+          <button type="submit" class="btn-primary full-width-btn">
+            <i class="fa-solid fa-user-plus"></i> Concluir Cadastro
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL DE RASTREAMENTO DO PEDIDO EM TEMPO REAL
+       ============================================================ -->
+  <div class="modal-overlay" id="orderTrackingModal" aria-hidden="true">
+    <div class="modal-container tracking-modal-box">
+      <button class="modal-close-btn" id="closeTrackingModalBtn" title="Fechar">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="modal-content" style="padding-top: 28px;">
+        <div class="tracking-top-badge">
+          <i class="fa-solid fa-circle-check"></i> Pedido Confirmado com Sucesso!
+        </div>
+
+        <h2 class="modal-title" style="text-align: center; margin-bottom: 4px;" id="trackOrderNumber">#GH-0000</h2>
+        <p style="text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 24px;" id="trackRestaurantName">
+          Restaurante Exemplo
+        </p>
+
+        <!-- Stepper / Linha do Tempo do Pedido -->
+        <div class="order-timeline">
+          <div class="timeline-step completed" id="stepReceived">
+            <div class="step-icon"><i class="fa-solid fa-check"></i></div>
+            <div class="step-label">Recebido</div>
+          </div>
+          <div class="timeline-line completed" id="line1"></div>
+          <div class="timeline-step current" id="stepKitchen">
+            <div class="step-icon"><i class="fa-solid fa-utensils"></i></div>
+            <div class="step-label">Na Cozinha</div>
+          </div>
+          <div class="timeline-line" id="line2"></div>
+          <div class="timeline-step" id="stepDelivery">
+            <div class="step-icon"><i class="fa-solid fa-motorcycle"></i></div>
+            <div class="step-label">A Caminho</div>
+          </div>
+          <div class="timeline-line" id="line3"></div>
+          <div class="timeline-step" id="stepFinished">
+            <div class="step-icon"><i class="fa-solid fa-house-chimney"></i></div>
+            <div class="step-label">Entregue</div>
+          </div>
+        </div>
+
+        <!-- Detalhes do Pedido e Pagamento -->
+        <div class="order-details-card">
+          <div class="details-row">
+            <span>Endereço de Entrega:</span>
+            <strong id="trackAddress">-</strong>
+          </div>
+          <div class="details-row">
+            <span>Forma de Pagamento:</span>
+            <strong id="trackPayment">-</strong>
+          </div>
+          <div class="details-row">
+            <span>Previsão de Entrega:</span>
+            <strong id="trackTime" style="color: var(--primary);">35-45 min</strong>
+          </div>
+        </div>
+
+        <!-- Seção Pix (caso pago via Pix) -->
+        <div id="pixPaymentBox" class="pix-card" style="display: none; margin-top: 16px;">
+          <div class="pix-title"><i class="fa-brands fa-pix"></i> Código Pix Copia e Cola</div>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px;">
+            Copie a chave abaixo e realize o pagamento pelo aplicativo do seu banco:
+          </p>
+          <div class="pix-copy-row">
+            <input type="text" id="pixCodeInput" readonly value="00020126580014BR.GOV.BCB.PIX0136gastrohub-guariba@pix.com.br520400005303986540410.005802BR5920GastroHub Guariba6007Guariba62070503***6304D1B8">
+            <button type="button" class="btn-primary" id="copyPixBtn" style="padding: 8px 14px; font-size: 0.82rem;">
+              <i class="fa-regular fa-copy"></i> Copiar
+            </button>
+          </div>
+        </div>
+
+        <!-- Lista de Itens do Pedido -->
+        <div class="track-items-box">
+          <h4 style="font-size: 0.95rem; margin-bottom: 8px; color: var(--text-main);">Itens Solicitados:</h4>
+          <ul id="trackItemsList" class="track-items-list">
+            <!-- Inserido dinamicamente -->
+          </ul>
+          <div class="track-total-row">
+            <span>Valor Total:</span>
+            <strong id="trackTotal">R$ 0,00</strong>
+          </div>
+        </div>
+
+        <div class="modal-action-bar" style="margin-top: 20px;">
+          <button type="button" class="btn-secondary" id="finishTrackingBtn" style="flex: 1;">
+            Acompanhar em Meus Pedidos
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL DE HISTÓRICO "MEUS PEDIDOS"
+       ============================================================ -->
+  <div class="modal-overlay" id="ordersHistoryModal" aria-hidden="true">
+    <div class="modal-container">
+      <button class="modal-close-btn" id="closeOrdersModalBtn" title="Fechar">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="modal-content" style="padding-top: 28px;">
+        <h2 class="modal-title" style="margin-bottom: 4px;">
+          <i class="fa-solid fa-clock-rotate-left" style="color: var(--primary);"></i> Meus Pedidos
+        </h2>
+        <p class="place-desc" style="margin-bottom: 20px;">
+          Histórico de pedidos realizados diretamente pelo site com status atualizado.
+        </p>
+
+        <div id="ordersHistoryList" class="orders-history-container">
+          <!-- Inserido dinamicamente via JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL DE DETALHES & CARDÁPIO DO LOCAL
+       ============================================================ -->
+  <div class="modal-overlay" id="detailsModal" aria-hidden="true">
+    <div class="modal-container">
+      <button class="modal-close-btn" id="closeDetailsModalBtn" title="Fechar" aria-label="Fechar modal">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      
+      <img id="modalCoverImg" src="" alt="Capa do Estabelecimento" class="modal-hero-img">
+
+      <div class="modal-content">
+        <div class="modal-header-meta">
+          <div>
+            <span class="cat-badge" id="modalCategoryBadge">Categoria</span>
+            <h2 class="modal-title" id="modalTitle">Nome do Estabelecimento</h2>
+          </div>
+          <div class="place-rating" id="modalRating">
+            <i class="fa-solid fa-star"></i> <span>5.0</span>
+          </div>
+        </div>
+
+        <p class="place-desc" id="modalDescription">Descrição do local.</p>
+
+        <!-- Informações de Contato e Localização -->
+        <div class="modal-info-grid">
+          <div class="modal-info-item">
+            <i class="fa-solid fa-location-dot"></i>
+            <div>
+              <span>Endereço</span>
+              <strong id="modalAddress">-</strong>
+            </div>
+          </div>
+          <div class="modal-info-item">
+            <i class="fa-solid fa-clock"></i>
+            <div>
+              <span>Horário</span>
+              <strong id="modalHours">-</strong>
+            </div>
+          </div>
+          <div class="modal-info-item">
+            <i class="fa-solid fa-motorcycle"></i>
+            <div>
+              <span>Tempo de Entrega</span>
+              <strong id="modalDelivery">-</strong>
+            </div>
+          </div>
+          <div class="modal-info-item">
+            <i class="fa-solid fa-tag"></i>
+            <div>
+              <span>Preço Médio</span>
+              <strong id="modalPrice">-</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cardápio / Destaques com botão de adicionar direto -->
+        <h3 class="modal-section-title">
+          <i class="fa-solid fa-book-open"></i> Cardápio & Pedidos Online
+        </h3>
+        <div class="menu-items-list" id="modalMenuList">
+          <!-- Inserido dinamicamente via JS com botão + Adicionar à Sacola -->
+        </div>
+
+        <!-- Barra de Ações do Modal -->
+        <div class="modal-action-bar">
+          <button type="button" class="btn-primary" id="modalViewCartBtn" style="flex: 1;">
+            <i class="fa-solid fa-bag-shopping"></i>
+            <span>Ver Sacola & Fazer Pedido</span>
+          </button>
+          <a href="#" target="_blank" rel="noopener noreferrer" class="btn-whatsapp" id="modalWhatsappBtn" title="Pedir no WhatsApp caso prefira">
+            <i class="fa-brands fa-whatsapp"></i>
+            <span>WhatsApp</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL DE CADASTRO DE NOVO ESTABELECIMENTO
+       ============================================================ -->
+  <div class="modal-overlay" id="addPlaceModal" aria-hidden="true">
+    <div class="modal-container">
+      <button class="modal-close-btn" id="closeAddModalBtn" title="Fechar" aria-label="Fechar modal">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="modal-content" style="padding-top: 36px;">
+        <h2 class="modal-title" style="margin-bottom: 6px;">
+          <i class="fa-solid fa-store" style="color: var(--primary);"></i> Cadastrar Estabelecimento
+        </h2>
+        <p class="place-desc" style="margin-bottom: 24px;">
+          Adicione um novo restaurante, lanchonete ou pizzaria com fotos, cardápio e WhatsApp.
+        </p>
+
+        <form id="addPlaceForm">
+          <div class="form-grid">
+            <!-- Nome -->
+            <div class="form-group full-width">
+              <label class="form-label" for="formName">
+                <i class="fa-solid fa-tag"></i> Nome do Estabelecimento *
+              </label>
+              <input type="text" id="formName" class="form-input" placeholder="Ex: Cantina Di Roma, Smash Burguer..." required>
+            </div>
+
+            <!-- Categoria -->
+            <div class="form-group">
+              <label class="form-label" for="formCategory">
+                <i class="fa-solid fa-layer-group"></i> Categoria Principal *
+              </label>
+              <select id="formCategory" class="form-select" required>
+                <option value="pizzaria">🍕 Pizzaria</option>
+                <option value="lanchonete">🍔 Lanchonete / Burgers</option>
+                <option value="restaurante">🍷 Restaurante / Bistrô</option>
+              </select>
+            </div>
+
+            <!-- Bairro -->
+            <div class="form-group">
+              <label class="form-label" for="formNeighborhood">
+                <i class="fa-solid fa-map-pin"></i> Bairro / Região *
+              </label>
+              <input type="text" id="formNeighborhood" class="form-input" placeholder="Ex: Centro, Vila Virgínia, Cecap..." required>
+            </div>
+
+            <!-- Endereço Completo -->
+            <div class="form-group full-width">
+              <label class="form-label" for="formAddress">
+                <i class="fa-solid fa-location-dot"></i> Endereço Completo
+              </label>
+              <input type="text" id="formAddress" class="form-input" placeholder="Ex: Av. Joaquim Matheus Corrêa, 1200">
+            </div>
+
+            <!-- Foto de Capa (URL e Sugestões) -->
+            <div class="form-group full-width">
+              <label class="form-label" for="formImage">
+                <i class="fa-solid fa-image"></i> Link da Foto de Capa *
+              </label>
+              <input type="url" id="formImage" class="form-input" placeholder="https://exemplo.com/foto.jpg" required>
+              <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
+                Ou selecione uma foto pronta sugerida abaixo:
+              </div>
+              <div class="preset-images-box" id="presetImagesContainer">
+                <!-- Miniaturas sugeridas adicionadas dinamicamente -->
+              </div>
+            </div>
+
+            <!-- Faixa de Preço -->
+            <div class="form-group">
+              <label class="form-label" for="formPrice">
+                <i class="fa-solid fa-coins"></i> Faixa de Preço
+              </label>
+              <select id="formPrice" class="form-select">
+                <option value="$">$ Econômico</option>
+                <option value="$$" selected>$$ Médio</option>
+                <option value="$$$">$$$ Sofisticado</option>
+              </select>
+            </div>
+
+            <!-- Tempo de Entrega -->
+            <div class="form-group">
+              <label class="form-label" for="formDeliveryTime">
+                <i class="fa-solid fa-clock"></i> Tempo de Entrega
+              </label>
+              <input type="text" id="formDeliveryTime" class="form-input" placeholder="Ex: 30-45 min" value="30-45 min">
+            </div>
+
+            <!-- Taxa de Entrega -->
+            <div class="form-group">
+              <label class="form-label" for="formDeliveryFee">
+                <i class="fa-solid fa-motorcycle"></i> Taxa de Entrega
+              </label>
+              <input type="text" id="formDeliveryFee" class="form-input" placeholder="Ex: Grátis ou R$ 5,00" value="Grátis">
+            </div>
+
+            <!-- WhatsApp -->
+            <div class="form-group">
+              <label class="form-label" for="formWhatsapp">
+                <i class="fa-brands fa-whatsapp"></i> WhatsApp (com DDD)
+              </label>
+              <input type="tel" id="formWhatsapp" class="form-input" placeholder="Ex: 16999998888">
+            </div>
+
+            <!-- Descrição -->
+            <div class="form-group full-width">
+              <label class="form-label" for="formDescription">
+                <i class="fa-solid fa-align-left"></i> Descrição / Especialidades
+              </label>
+              <textarea id="formDescription" class="form-textarea" placeholder="Descreva os diferenciais, massas, carnes especiais ou ambiente..."></textarea>
+            </div>
+
+            <!-- Prato Destaque no Cardápio Inicial -->
+            <div class="form-group full-width">
+              <label class="form-label">
+                <i class="fa-solid fa-utensils"></i> Prato Principal / Destaque do Cardápio
+              </label>
+              <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 10px;">
+                <input type="text" id="formItemName" class="form-input" placeholder="Nome do prato (ex: Pizza Especial da Casa)">
+                <input type="text" id="formItemPrice" class="form-input" placeholder="Preço (ex: R$ 59,90)">
+              </div>
+              <input type="text" id="formItemDesc" class="form-input" style="margin-top: 8px;" placeholder="Ingredientes ou descrição rápida do prato...">
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" id="cancelAddBtn">Cancelar</button>
+            <button type="submit" class="btn-primary">
+              <i class="fa-solid fa-check"></i> Salvar Estabelecimento
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTAINER DE NOTIFICAÇÕES (TOASTS) -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="brand-logo" style="font-size: 1.25rem;">
+        <div class="brand-icon" style="width: 36px; height: 36px; font-size: 1rem;">
+          <i class="fa-solid fa-utensils"></i>
+        </div>
+        <div class="brand-title">Gastro<span>Hub</span> <small style="font-size: 0.6em; opacity: 0.8; font-weight: normal; margin-left: 4px;">Guariba</small></div>
+      </div>
+      
+      <p class="footer-copy">
+        © 2026 GastroHub Guariba - Guia Completo & Pedidos Online de Restaurantes, Lanchonetes e Pizzarias de Guariba - SP.
+      </p>
+
+      <button id="resetDataBtn" class="btn-secondary" style="font-size: 0.78rem; padding: 6px 14px; opacity: 0.7;" title="Restaura os estabelecimentos padrão de Guariba - SP">
+        <i class="fa-solid fa-rotate-left"></i> Restaurar locais de Guariba
+      </button>
+    </div>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
